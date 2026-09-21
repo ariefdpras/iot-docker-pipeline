@@ -1,0 +1,27 @@
+<style>
+/* 1. Latar Belakang Gambar Anda */
+.main-view {
+    background: url('https://admin-web.pupuk-kujang.co.id/proxy-file?source=produksi/profil_unit_produksi/file-K0dIG1729838733.jpg') no-repeat center center fixed !important;
+    background-size: cover !important;
+}
+
+/* 2. Tembak langsung semua isi di dalam Grid Grafana */
+.react-grid-item > * {
+    background: rgba(15, 15, 15, 0.45) !important; /* Warna kaca hitam transparan */
+    backdrop-filter: blur(5px) !important; /* Efek blur */
+    -webkit-backdrop-filter: blur(5px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.15) !important; /* Garis mewah */
+    box-shadow: 0 10px 30px 0 rgba(0, 0, 0, 0.5) !important;
+    border-radius: 16px !important;
+    height: 100% !important; /* Pastikan kaca memenuhi area panel */
+}
+
+/* 3. Pastikan isi grafiknya tidak tertutup warna solid */
+.react-grid-item > * > * {
+    background: transparent !important;
+}
+
+.panel-title {
+    color: #ffffff !important;
+}
+</style>

@@ -1,0 +1,115 @@
+#version: "3.8"
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: mysql-dataes405
+    restart: unless-stopped
+
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+      MYSQL_DATABASE: ${MYSQL_DATABASE}
+      TZ: Asia/Jakarta
+
+    ports:
+      - "3306:3306"
+
+    volumes:
+      - ./mysql_data:/var/lib/mysql
+      - ./mysql/init:/docker-entrypoint-initdb.d
+
+    command:
+      - --default-authentication-plugin=mysql_native_password
+
+    networks:
+      - es405-network
+
+  grafana:
+    image: grafana/grafana-oss:latest
+    container_name: grafana-es405
+    restart: unless-stopped
+
+    depends_on:
+      - mysql
+
+    environment:
+      GF_PANELS_DISABLE_SANITIZE_HTML: "true"
+      GF_SECURITY_ADMIN_USER: ${GRAFANA_ADMIN_USER}
+      GF_SECURITY_ADMIN_PASSWORD: ${GRAFANA_ADMIN_PASSWORD}
+      TZ: Asia/Jakarta
+
+    ports:
+      - "3000:3000"
+
+    volumes:
+      - ./grafana_backup:/var/lib/grafana
+
+    networks:
+      - es405-network
+
+  nodered:
+    image: nodered/node-red:latest
+    container_name: nodered-es405
+    restart: unless-stopped
+
+    depends_on:
+      - mysql
+
+    environment:
+      TZ: Asia/Jakarta
+
+    ports:
+      - "1880:1880"
+
+    volumes:
+      - ./nodered_backup:/data
+
+    networks:
+      - es405-network
+
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    container_name: tunnel-es405
+    restart: unless-stopped
+    command: tunnel run
+    environment:
+      - TUNNEL_TOKEN=${CLOUDFLARE_TUNNEL_TOKEN}
+    depends_on:
+      - grafana
+    networks:
+      - es405-network
+
+  # loki:
+  #   image: grafana/loki:latest
+  #   container_name: loki-es405
+  #   ports:
+  #     - "3100:3100"
+  #   command: -config.file=/etc/loki/local-config.yaml
+  #   restart: unless-stopped
+  #   networks:
+  #     - es405-network
+
+  # promtail:
+  #   image: grafana/promtail:latest
+  #   container_name: promtail-es405
+  #   volumes:
+  #     # Akses ini diperlukan agar promtail bisa membaca log asli dari docker
+  #     - /var/run/docker.sock:/var/run/docker.sock
+  #     - /var/lib/docker/containers:/var/lib/docker/containers:ro
+  #     # Memanggil file config promtail-config.yaml
+  #     - ./promtail-config.yaml:/etc/promtail/local-config.yaml
+  #   command: -config.file=/etc/promtail/local-config.yaml
+  #   depends_on:
+  #     - loki
+  #   restart: unless-stopped
+  #   networks:
+  #     - es405-network
+
+volumes:
+  mysql_data:
+  grafana_data:
+  nodered_data:
+
+networks:
+  es405-network:
+    driver: bridge

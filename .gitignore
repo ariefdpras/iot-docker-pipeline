@@ -1,0 +1,23 @@
+# Kredensial
+.env
+credential_*.txt
+*.txt
+src/config.py
+
+# Database & datavolume
+mysql_data/
+mysql/
+
+#folder Backup
+grafana_backup/
+nodered_backup/
+
+# File bawaan OS
+desktop.ini
+.DS_Store
+Thumbs.db 
+
+# Python Cache
+__pycache__/
+*.py[cod]
+*$py.class
