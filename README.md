@@ -18,18 +18,18 @@ The following diagram illustrates how telemetry data flows from edge devices to 
 ```mermaid
 flowchart LR
     subgraph Edge["Edge / Field Devices"]
-        Sensors["IoT Sensors & Telemetry (AQMS, Water Level, etc.)"]
+        Sensors["IoT Sensors & Telemetry"]
     end
 
     subgraph DockerHost["Docker Host (Containerized Services)"]
         direction TB
         subgraph Ingestion["Data Ingestion & Processing"]
-            PyApp["Python Ingestion Service (src/main.py)"]
-            NodeRed["Node-RED Flow Engine (Port 1880)"]
+            PyApp["Python Ingestion Service"]
+            NodeRed["Node-RED Engine (Port 1880)"]
         end
 
         subgraph Storage["Persistence Layer"]
-            MySQL[("MySQL 8.0 Database (Port 3306)")]
+        MySQL[("MySQL 8.0 Database (Port 3306)")]
         end
 
         subgraph Observability["Observability & Logging"]
@@ -43,17 +43,17 @@ flowchart LR
     end
 
     subgraph Internet["Secure Remote Clients"]
-        Clients["Admin Dashboard / Remote Monitoring"]
+        Clients["Admin Dashboard / Remote Users"]
     end
 
-    Sensors -->|MQTT / HTTP| PyApp
-    Sensors -->|MQTT / REST| NodeRed
-    PyApp -->|Store Sensor Data| MySQL
-    NodeRed -->|Store / Stream Data| MySQL
-    MySQL -->|Query Metrics| Grafana
-    Promtail -->|Scrape Container Logs| Grafana
+    Sensors -->|"MQTT / HTTP"| PyApp
+    Sensors -->|"MQTT / REST"| NodeRed
+    PyApp -->|"Store Data"| MySQL
+    NodeRed -->|"Store & Stream"| MySQL
+    MySQL -->|"Query Metrics"| Grafana
+    Promtail -->|"Scrape Container Logs"| Grafana
     Grafana <--> CFTunnel
-    CFTunnel <-->|Encrypted Outbound Tunnel (No Open Ports)| Clients
+    CFTunnel <-->|"Encrypted Zero-Trust Tunnel"| Clients
 
 Key Features
 Microservices Orchestration: Fully managed multi-container environment via docker-compose.yml with isolated internal bridge networking (es405-network).
