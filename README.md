@@ -1,7 +1,6 @@
 # 📡 IoT Telemetry Monitoring & Logging Pipeline
 
 An end-to-end containerized IoT telemetry ingestion, persistent storage, real-time visualization, and secure zero-trust remote monitoring stack built with **Docker Compose**.
-
 ![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
 ![MySQL](https://img.shields.io/badge/MySQL-005C84?style=for-the-badge&logo=mysql&logoColor=white)
 ![Grafana](https://img.shields.io/badge/Grafana-F46800?style=for-the-badge&logo=grafana&logoColor=white)
@@ -20,42 +19,35 @@ flowchart LR
     subgraph Edge["Edge / Field Devices"]
         Sensors["IoT Sensors & Telemetry"]
     end
-
-    subgraph DockerHost["Docker Host (Containerized Services)"]
+    subgraph DockerHost["Docker Host"]
         direction TB
-        subgraph Ingestion["Data Ingestion & Processing"]
+        subgraph Ingestion["Ingestion Layer"]
             PyApp["Python Ingestion Service"]
-            NodeRed["Node-RED Engine (Port 1880)"]
+            NodeRed["Node-RED Engine"]
         end
-
-        subgraph Storage["Persistence Layer"]
-        MySQL[("MySQL 8.0 Database (Port 3306)")]
+        subgraph Storage["Storage Layer"]
+            MySQL[("MySQL 8.0 Database")]
         end
-
-        subgraph Observability["Observability & Logging"]
-            Grafana["Grafana Dashboard (Port 3000)"]
+        subgraph Observability["Observability"]
+            Grafana["Grafana Dashboard"]
             Promtail["Promtail Log Collector"]
         end
-
         subgraph Security["Zero Trust Remote Access"]
-            CFTunnel["Cloudflare Tunnel (cloudflared)"]
+            CFTunnel["Cloudflare Tunnel"]
         end
     end
-
-    subgraph Internet["Secure Remote Clients"]
-        Clients["Admin Dashboard / Remote Users"]
+    subgraph Remote["Remote Users"]
+        Clients["Admin Dashboard / Client"]
     end
-
     Sensors -->|"MQTT / HTTP"| PyApp
     Sensors -->|"MQTT / REST"| NodeRed
     PyApp -->|"Store Data"| MySQL
     NodeRed -->|"Store & Stream"| MySQL
     MySQL -->|"Query Metrics"| Grafana
-    Promtail -->|"Scrape Container Logs"| Grafana
-    Grafana <--> CFTunnel
-    CFTunnel <-->|"Encrypted Zero-Trust Tunnel"| Clients
-
-Key Features
+    Promtail -->|"Scrape Logs"| Grafana
+    Grafana --- CFTunnel
+    CFTunnel ---|"Encrypted Tunnel"| Clients
+✨ Key Features
 Microservices Orchestration: Fully managed multi-container environment via docker-compose.yml with isolated internal bridge networking (es405-network).
 Data Ingestion & Transformation: Python service with automated timezone adjustment (Asia/Jakarta) and Node-RED for dynamic low-code workflow logic.
 Persistent Storage: MySQL 8.0 relational database with dedicated initialization scripts and persistent volume management.
@@ -65,6 +57,7 @@ Zero-Trust Remote Access: Integrated Cloudflare Tunnel (cloudflared) providing s
 DevSecOps Ready: Strict separation of secrets and configuration through .env variable interpolation and robust .gitignore rules.
 
 📁 Repository Structure
+
 .
 ├── src/                        # Python telemetry ingestion & handler logic
 │   ├── config.py               # Environment & configuration loader
@@ -100,8 +93,6 @@ bash
 
 
 cp .env.example .env
-Edit .env and set your desired database passwords, Grafana admin credentials, and Cloudflare Tunnel token.
-
 3. Run the Stack
 Start all services in detached mode:
 
@@ -121,7 +112,6 @@ Grafana	http://localhost:3000	Real-time monitoring & metrics visualization
 Node-RED	http://localhost:1880	Flow-based visual programming for IoT
 MySQL	localhost:3306	Persistent database storage
 Promtail	localhost:9080	Log collector agent
-
 👤 Author
 Arief Dwi Prasetyo
 
