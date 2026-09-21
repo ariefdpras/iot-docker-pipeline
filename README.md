@@ -1,3 +1,5 @@
+markdown
+
 # 📡 IoT Telemetry Monitoring & Logging Pipeline
 
 An end-to-end containerized IoT telemetry ingestion, persistent storage, real-time visualization, and secure zero-trust remote monitoring stack built with **Docker Compose**.
@@ -55,8 +57,9 @@ Glassmorphism Dashboard: Customized Grafana UI with rich CSS styling (glassmorph
 Centralized Container Logging: Promtail agent automatically discovers and scrapes container logs via the Docker socket.
 Zero-Trust Remote Access: Integrated Cloudflare Tunnel (cloudflared) providing secure external access without requiring public IP, DDNS, or port forwarding.
 DevSecOps Ready: Strict separation of secrets and configuration through .env variable interpolation and robust .gitignore rules.
-
 📁 Repository Structure
+text
+
 
 .
 ├── src/                        # Python telemetry ingestion & handler logic
@@ -72,7 +75,6 @@ DevSecOps Ready: Strict separation of secrets and configuration through .env var
 ├── glassmorphism.css           # Custom Grafana styling
 ├── .env.example                # Template for environment variables
 └── .gitignore                  # Git tracking exclusion list
-
 🚀 Quick Start
 1. Prerequisites
 Docker Engine
